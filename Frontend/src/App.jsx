@@ -36,7 +36,7 @@ module.exports = app;`);
 
   async function reviewCode() {
     const response = await axios.post(
-      "https://ai-powered-code-reviewer-offline.vercel.app/get-review",
+      "https://ai-powered-code-reviewer-offline.vercel.app/ai/get-review",
       {
         code,
       }
