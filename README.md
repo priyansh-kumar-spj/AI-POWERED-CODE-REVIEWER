@@ -8,11 +8,8 @@ This project focuses on **developer productivity**, **clean UI**, and **real-wor
 
 ## Live Demo
 
-Frontend  
+ ## Code Reviewer
 👉 https://ai-powered-code-reviewer-vy2u.vercel.app
-
-Backend API  
-👉 https://ai-powered-code-reviewer-offline.vercel.app
 
 ---
 
