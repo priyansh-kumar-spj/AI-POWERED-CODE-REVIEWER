@@ -2,19 +2,17 @@ import { useEffect, useState } from "react";
 import Editor from "react-simple-code-editor";
 import Prism from "prismjs";
 
-// Prism editor
+// Prism
 import "prismjs/themes/prism.css";
 import "prismjs/components/prism-javascript";
 
-// Markdown render
+// Markdown
 import Markdown from "react-markdown";
 import rehypeHighlight from "rehype-highlight";
 import "highlight.js/styles/github-dark.css";
 
 import axios from "axios";
 import "./App.css";
-
-const API_URL = import.meta.env.VITE_API_URL;
 
 function App() {
   const [code, setCode] = useState(`const express = require("express");
@@ -30,7 +28,7 @@ app.get("/", (req, res) => {
 
 module.exports = app;`);
 
-  const [review, setReview] = useState("");
+  const [review, setReview] = useState("Click **Review** to get AI feedback 🚀");
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
@@ -38,25 +36,25 @@ module.exports = app;`);
   }, []);
 
   async function reviewCode() {
-    if (!code.trim()) {
-      setReview("⚠️ Please enter some code to review.");
-      return;
-    }
-
     try {
       setLoading(true);
-      setReview("");
+      setReview("⏳ Reviewing your code...");
 
       const response = await axios.post(
-        `${API_URL}/ai/get-review`,
-        { code }
+        "https://ai-powered-code-reviewer-offline.vercel.app/ai/get-review",
+        { code },
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
       );
 
-      // backend may return string or { review }
-      setReview(response.data.review || response.data);
+      setReview(response.data);
     } catch (error) {
-      console.error(error);
-      setReview("❌ Failed to get AI review. Please try again.");
+      setReview(
+        "❌ Failed to fetch review.\n\nMake sure backend is live and CORS is enabled."
+      );
     } finally {
       setLoading(false);
     }
@@ -64,7 +62,7 @@ module.exports = app;`);
 
   return (
     <main>
-      {/* LEFT : CODE EDITOR */}
+      {/* LEFT PANEL */}
       <div className="left">
         <div className="code">
           <Editor
@@ -86,30 +84,21 @@ module.exports = app;`);
           />
         </div>
 
-        <button
-          className="review"
-          onClick={reviewCode}
-          disabled={loading}
-        >
+        <button className="review" onClick={reviewCode} disabled={loading}>
           {loading ? "Reviewing..." : "Review"}
         </button>
       </div>
 
-      {/* RIGHT : AI REVIEW */}
+      {/* RIGHT PANEL */}
       <div className="right">
-        {review ? (
-          <Markdown rehypePlugins={[rehypeHighlight]}>
-            {review}
-          </Markdown>
-        ) : (
-          <p className="placeholder">
-            AI review will appear here...
-          </p>
-        )}
+        <Markdown rehypePlugins={[rehypeHighlight]}>
+          {review}
+        </Markdown>
       </div>
     </main>
   );
 }
 
 export default App;
+
 
