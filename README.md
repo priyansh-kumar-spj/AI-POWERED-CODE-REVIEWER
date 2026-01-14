@@ -8,7 +8,6 @@ This project focuses on **developer productivity**, **clean UI**, and **real-wor
 
 ## Live Demo
 
- ## Code Reviewer
 👉 https://ai-powered-code-reviewer-vy2u.vercel.app
 
 ---
@@ -42,17 +41,6 @@ This project focuses on **developer productivity**, **clean UI**, and **real-wor
 - Deployed on Vercel
 
 ---
-
-## Project Structure
-
-```text
-src/
-├── App.jsx
-├── App.css
-├── main.jsx
-├── index.css
-Author
-```
 ### Priyansh Kumar
 ## Frontend Developer | AI Engineer
 ---
