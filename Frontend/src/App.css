@@ -73,8 +73,9 @@ main {
   box-shadow: 0 14px 40px rgba(56, 189, 248, 0.55);
 }
 
-.review:active {
-  transform: scale(0.96);
+.review:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
 }
 
 /* ---------- MARKDOWN ---------- */
@@ -100,7 +101,7 @@ main {
   margin-bottom: 0.4rem;
 }
 
-/* ---------- CODE BLOCK TUNING ---------- */
+/* ---------- CODE BLOCK ---------- */
 .right pre {
   background: #020617 !important;
   padding: 1rem;
@@ -115,7 +116,7 @@ main {
   line-height: 1.6;
 }
 
-/* Reduce over-highlighting */
+/* ---------- HIGHLIGHT TUNING ---------- */
 .hljs-keyword,
 .hljs-title,
 .hljs-variable,
@@ -141,3 +142,4 @@ main {
   background: linear-gradient(180deg, #38bdf8, #818cf8);
   border-radius: 10px;
 }
+
