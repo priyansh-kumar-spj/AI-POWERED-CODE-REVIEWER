@@ -2,17 +2,19 @@ import { useEffect, useState } from "react";
 import Editor from "react-simple-code-editor";
 import Prism from "prismjs";
 
-// Editor (PrismJS)
+// Prism editor
 import "prismjs/themes/prism.css";
 import "prismjs/components/prism-javascript";
 
-// Markdown review
+// Markdown render
 import Markdown from "react-markdown";
 import rehypeHighlight from "rehype-highlight";
 import "highlight.js/styles/github-dark.css";
 
 import axios from "axios";
 import "./App.css";
+
+const API_URL = import.meta.env.VITE_API_URL;
 
 function App() {
   const [code, setCode] = useState(`const express = require("express");
@@ -29,24 +31,40 @@ app.get("/", (req, res) => {
 module.exports = app;`);
 
   const [review, setReview] = useState("");
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     Prism.highlightAll();
   }, []);
 
   async function reviewCode() {
-    const response = await axios.post(
-      "https://ai-powered-code-reviewer-offline.vercel.app/ai/get-review",
-      {
-        code,
-      }
-    );
-    setReview(response.data);
+    if (!code.trim()) {
+      setReview("⚠️ Please enter some code to review.");
+      return;
+    }
+
+    try {
+      setLoading(true);
+      setReview("");
+
+      const response = await axios.post(
+        `${API_URL}/ai/get-review`,
+        { code }
+      );
+
+      // backend may return string or { review }
+      setReview(response.data.review || response.data);
+    } catch (error) {
+      console.error(error);
+      setReview("❌ Failed to get AI review. Please try again.");
+    } finally {
+      setLoading(false);
+    }
   }
 
   return (
     <main>
-      {/* LEFT : CODE */}
+      {/* LEFT : CODE EDITOR */}
       <div className="left">
         <div className="code">
           <Editor
@@ -68,17 +86,30 @@ module.exports = app;`);
           />
         </div>
 
-        <button className="review" onClick={reviewCode}>
-          Review
+        <button
+          className="review"
+          onClick={reviewCode}
+          disabled={loading}
+        >
+          {loading ? "Reviewing..." : "Review"}
         </button>
       </div>
 
       {/* RIGHT : AI REVIEW */}
       <div className="right">
-        <Markdown rehypePlugins={[rehypeHighlight]}>{review}</Markdown>
+        {review ? (
+          <Markdown rehypePlugins={[rehypeHighlight]}>
+            {review}
+          </Markdown>
+        ) : (
+          <p className="placeholder">
+            AI review will appear here...
+          </p>
+        )}
       </div>
     </main>
   );
 }
 
 export default App;
+
